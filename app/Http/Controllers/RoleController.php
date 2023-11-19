@@ -4,15 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\RoleService;
-use App\Traits\JsonResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class RoleController extends Controller
 {
-    use JsonResponseTrait;
-
     private $roleService;
 
     public function __construct(RoleService $roleService)

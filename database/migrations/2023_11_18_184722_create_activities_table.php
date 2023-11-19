@@ -8,22 +8,29 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('description');
+            $table->integer('value');
+            $table->foreignId('intervals_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
+            $table->integer('frequency');
             $table->timestamps();
         });
-    }
 
+    }
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('activities');
     }
 };
