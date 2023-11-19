@@ -10,10 +10,11 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="container mx-auto pt-16">
-
-    @yield('content')
-
+<body>
+    @include('layouts.navbar')
+    <div class="container mx-auto py-16">
+        @yield('content')
+    </div>
 </body>
 
 </html>
