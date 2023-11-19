@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ActivityRequest;
-use App\Models\Activity;
+use App\Http\Requests\RewardRequest;
 use App\Models\Interval;
-use App\Services\ActivityService;
+use App\Models\Reward;
+use App\Services\RewardService;
 use Illuminate\Http\Request;
 
-class ActivityController extends Controller
+class RewardController extends Controller
 {
-    private $activityService;
+    private $rewardService;
 
-    public function __construct(ActivityService $activityService)
+    public function __construct(RewardService $rewardService)
     {
-        $this->activityService = $activityService;
+        $this->rewardService = $rewardService;
     }
     /**
      * Display a listing of the resource.
@@ -33,7 +33,7 @@ class ActivityController extends Controller
      */
     public function create(Request $request)
     {
-        return view('activity.create', ['intervals' => Interval::all()]);
+        return view('reward.create', ['intervals' => Interval::all()]);
     }
 
     /**
@@ -42,10 +42,10 @@ class ActivityController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ActivityRequest $request)
+    public function store(RewardRequest $request)
     {
-        $this->activityService->store($request->validated());
-        return redirect()->route('activities.list');
+        $this->rewardService->store($request->validated());
+        return redirect()->route('rewards.list');
     }
 
     /**
@@ -90,18 +90,12 @@ class ActivityController extends Controller
      */
     public function destroy($id)
     {
-        $this->activityService->destroy($id);
-        return redirect()->route('activities.list');
+        $this->rewardService->destroy($id);
+        return redirect()->route('rewards.list');
     }
 
     public function list()
     {
-        return view('activity.list', ['activities' => $this->activityService->getAllWithIntervals()]);
-    }
-
-    public function completeActivity($id)
-    {
-        return $this->activityService->completeActivity($id);
-        return redirect()->route('activities.list');
+        return view('reward.list', ['rewards' => Reward::with('intervals')->get()]);
     }
 }

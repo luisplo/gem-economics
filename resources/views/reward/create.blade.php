@@ -2,13 +2,13 @@
 @section('content')
     <form method="POST" action="{{ route('activities.store') }}" class="grid grid-cols-1 gap-4 justify-items-center">
         @csrf
-        <h3 class="font-semibold text-4xl">Crea una actividad</h3>
+        <h3 class="font-semibold text-4xl">Crea una recompensa</h3>
         <br>
         <div class="form-control w-1/2">
             <label class="label">
                 <span class="label-text">Nombre</span>
             </label>
-            <input id="name" name="name" type="text" placeholder="Lavar los platos..."
+            <input id="name" name="name" type="text" placeholder="Visitar parque del café..."
                 class="input input-bordered @error('name') input-error @enderror" />
             @error('name')
                 <label class="label">
@@ -22,7 +22,7 @@
             </label>
             <textarea id="description" name="description"
                 class="textarea textarea-bordered h-24 @error('description') textarea-error @enderror"
-                placeholder="Al lavar los platos se debe seguir una serie de instrucciones, como ponerse delantal y guantes"></textarea>
+                placeholder="Tienes derecho a tener una visita al parque de café con todo pago"></textarea>
             @error('description')
                 <label class="label">
                     <span class="label-text-alt text-error">{{ $message }}</span>
@@ -32,9 +32,9 @@
         <div class="form-control w-1/2">
             <label class="label">
                 <span class="label-text">Gemas</span>
-                <span class="label-text-alt">Este campo representa el valor de la actividad</span>
+                <span class="label-text-alt">Este campo representa el valor de la recompensa</span>
             </label>
-            <input id="value" name="value" type="number" placeholder="3"
+            <input id="value" name="value" type="number" placeholder="300"
                 class="input input-bordered @error('frequencies_id') input-error @enderror" />
             @error('value')
                 <label class="label">

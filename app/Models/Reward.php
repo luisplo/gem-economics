@@ -6,23 +6,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Activity extends Model
+class Reward extends Model
 {
     use HasFactory;
 
     protected $fillable = ['name', 'description', 'value', 'intervals_id', 'frequency'];
-
-    public function intervals(): BelongsTo
-    {
-        return $this->belongsTo(Interval::class);
-    }
-
-    public function completeActivities(): BelongsTo
-    {
-        return $this->belongsTo(CompleteActivity::class);
-    }
 
     public function getAllInstance(): Collection
     {
@@ -55,8 +44,8 @@ class Activity extends Model
         };
     }
 
-    public function getAllWithIntervalsInstance(): Collection
+    public function intervals(): BelongsTo
     {
-        return $this->with('intervals')->get();
+        return $this->belongsTo(Interval::class);
     }
 }
