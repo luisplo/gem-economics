@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('complete_activities', function (Blueprint $table) {
+        Schema::create('complete_rewards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('activity_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
+            $table->foreignId('reward_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('value');
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('complete_activities');
+        Schema::dropIfExists('complete_rewards');
     }
 };

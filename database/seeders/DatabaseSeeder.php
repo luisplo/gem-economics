@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
-            IntervalSeed::class,
+            IntervalSeeder::class,
         ]);
     }
 }

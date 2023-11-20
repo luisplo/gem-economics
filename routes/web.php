@@ -20,8 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get('/activities/list', [ActivityController::class, 'list'])->name('activities.list');
-Route::get('/activities/complete/{id}', [ActivityController::class, 'completeActivity'])->name('activities.complete');
+Route::post('/activities/complete', [ActivityController::class, 'completeActivity'])->name('activities.complete');
 Route::resource('activities', ActivityController::class);
 
 Route::get('/rewards/list', [RewardController::class, 'list'])->name('rewards.list');
+Route::post('/rewards/complete', [RewardController::class, 'completeReward'])->name('rewards.complete');
 Route::resource('rewards', RewardController::class);
