@@ -15,6 +15,10 @@ RUN composer install && \
     php artisan cache:clear && \
     php artisan config:clear
 
+RUN apt-get update && apt-get install -yq nodejs npm
+
+RUN npm install && npm run build
+
 CMD [ "php", "artisan", "serve", "--host=0.0.0.0", "--port=80" ]
 
 EXPOSE 80
