@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('rewards', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('value');
             $table->foreignId('intervals_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('frequency');
+            $table->boolean('disabled')->default(false);
             $table->timestamps();
         });
     }

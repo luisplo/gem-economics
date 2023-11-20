@@ -96,6 +96,6 @@ class RewardController extends Controller
 
     public function list()
     {
-        return view('reward.list', ['rewards' => Reward::with('intervals')->get()]);
+        return view('reward.list', ['data' => Reward::with('intervals')->get()]);
     }
 }

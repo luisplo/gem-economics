@@ -14,14 +14,14 @@ class Activity extends Model
 
     protected $fillable = ['name', 'description', 'value', 'intervals_id', 'frequency'];
 
-    public function intervals(): BelongsTo
+    public function intervals()
     {
         return $this->belongsTo(Interval::class);
     }
 
-    public function completeActivities(): BelongsTo
+    public function completeActivities(): HasMany
     {
-        return $this->belongsTo(CompleteActivity::class);
+        return $this->hasMany(CompleteActivity::class);
     }
 
     public function getAllInstance(): Collection

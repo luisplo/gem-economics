@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ActivityRequest extends FormRequest
+class CompleteActivityRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,8 @@ class ActivityRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:100',
-            'description' => 'nullable|string|max:255',
-            'value' => 'required|integer|max_digits:5',
-            'intervals_id' => 'required|exists:intervals,id',
-            'frequency' => 'required|integer|max_digits:5',
+            'value' => 'required|integer',
+            'activity_id' => 'required|exists:activities,id',
         ];
     }
 }

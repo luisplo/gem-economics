@@ -25,7 +25,7 @@ class RewardRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'description' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
             'value' => 'required|integer|max_digits:5',
             'intervals_id' => 'required|exists:intervals,id',
             'frequency' => 'required|integer|max_digits:5',

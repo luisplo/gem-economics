@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ActivityRequest;
-use App\Models\Activity;
+use App\Http\Requests\CompleteActivityRequest;
 use App\Models\Interval;
 use App\Services\ActivityService;
 use Illuminate\Http\Request;
@@ -96,12 +96,12 @@ class ActivityController extends Controller
 
     public function list()
     {
-        return view('activity.list', ['activities' => $this->activityService->getAllWithIntervals()]);
+        return view('activity.list', ['data' => $this->activityService->getAllWithIntervals()]);
     }
 
-    public function completeActivity($id)
+    public function completeActivity(CompleteActivityRequest $request)
     {
-        return $this->activityService->completeActivity($id);
+        $this->activityService->completeActivity($request->all());
         return redirect()->route('activities.list');
     }
 }
