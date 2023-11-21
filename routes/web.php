@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RewardController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/activities/list', [ActivityController::class, 'list'])->name('activities.list');
 Route::post('/activities/complete', [ActivityController::class, 'completeActivity'])->name('activities.complete');

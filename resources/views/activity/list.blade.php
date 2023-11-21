@@ -8,6 +8,6 @@
             la revisión y la supervisión de todas las actividades, permitiendo a los usuarios obtener información rápida
             sobre el estado y los detalles de cada tarea planificada.</p>
         <br>
-        @includeIf('layouts.list', ['module' => 'activities', 'title' => 'actividad'])
+        @includeIf('layouts.list', ['id' => 'activity_id','module' => 'activities', 'title' => 'actividad'])
     </div>
 @endsection

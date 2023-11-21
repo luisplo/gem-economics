@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('activities', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('description')->nullable();
             $table->integer('value');
-            $table->foreignId('intervals_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
+            $table->foreignUuid('intervals_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('frequency');
             $table->boolean('disabled')->default(false);
             $table->timestamps();

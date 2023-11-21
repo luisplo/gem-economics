@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('complete_activities', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('activity_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('activity_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('value');
+            $table->boolean('disabled')->default(false);
             $table->timestamps();
         });
     }

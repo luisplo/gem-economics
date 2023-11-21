@@ -12,7 +12,7 @@
 
 <body>
     @include('layouts.navbar')
-    <div class="container mx-auto py-16">
+    <div class="container mx-auto py-8">
         @yield('content')
     </div>
 </body>

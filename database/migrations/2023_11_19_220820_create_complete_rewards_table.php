@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('complete_rewards', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('reward_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('reward_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('value');
+            $table->boolean('disabled')->default(false);
             $table->timestamps();
         });
     }

@@ -72,4 +72,14 @@ class ActivityService
     {
         return $this->completeActivity->storeInstance($request);
     }
+
+    public function getStats()
+    {
+        return [
+            'values' => $this->completeActivity->where('disabled', false)->sum('value'),
+            'used_values' => $this->completeActivity->where('disabled', true)->sum('value'),
+            'complete_activities' => $this->model->where('disabled', true)->count(),
+            'incomplete_activities' => $this->model->where('disabled', false)->count()
+        ];
+    }
 }

@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CompleteActivity extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $keyType = 'string';
     protected $fillable = ['activity_id', 'value'];
 
     public function storeInstance($request): Model

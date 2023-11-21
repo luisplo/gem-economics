@@ -8,6 +8,6 @@
             diseño facilita la revisión y supervisión eficientes de todas las recompensas, permitiendo a los usuarios
             obtener información rápida sobre cada elemento registrado en el sistema.</p>
         <br>
-        @includeIf('layouts.list', ['module' => 'rewards', 'title' => 'recompensa'])
+        @includeIf('layouts.list', ['id' => 'reward_id','module' => 'rewards', 'title' => 'recompensa'])
     </div>
 @endsection

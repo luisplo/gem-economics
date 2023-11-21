@@ -27,7 +27,7 @@
                     <td class="grid grid-cols-2">
                         <form method="post" action="{{ route($module . '.complete') }}">
                             @csrf
-                            <input name="activity_id" hidden value={{ $item->id }}>
+                            <input name="{{ $id }}" hidden value={{ $item->id }}>
                             <input name="value" hidden value={{ $item->value }}>
                             <button type="submit" class="btn bg-success {{ $item->disabled ? 'btn-disabled' : '' }}"
                                 onclick="return confirm('¿Estás seguro de que deseas dar por finalizada la {{ $title }}?')">

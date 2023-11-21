@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompleteRewardRequest;
 use App\Http\Requests\RewardRequest;
 use App\Models\Interval;
-use App\Models\Reward;
 use App\Services\RewardService;
 use Illuminate\Http\Request;
 
@@ -96,6 +96,13 @@ class RewardController extends Controller
 
     public function list()
     {
-        return view('reward.list', ['data' => Reward::with('intervals')->get()]);
+        return view('reward.list', ['data' =>  $this->rewardService->getAllWithIntervals()]);
+    }
+
+    public function completeReward(CompleteRewardRequest $request)
+    {
+
+        $this->rewardService->completeReward($request->all());
+        return redirect()->route('rewards.list');
     }
 }
