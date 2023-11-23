@@ -3,106 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CompleteRewardRequest;
 use App\Http\Requests\RewardRequest;
-use App\Models\Interval;
+use App\Models\CompleteReward;
+use App\Models\Reward;
 use App\Services\RewardService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class RewardController extends Controller
 {
     private $rewardService;
+    private $model;
 
-    public function __construct(RewardService $rewardService)
-    {
+    public function __construct(
+        RewardService $rewardService,
+        Reward $reward,
+    ) {
         $this->rewardService = $rewardService;
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
+        $this->model = $reward;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
+    public function index(): JsonResponse
     {
-        return view('reward.create', ['intervals' => Interval::all()]);
+        return $this->successResponse($this->rewardService->getAllWithIntervals());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(RewardRequest $request)
+    public function store(RewardRequest $request): JsonResponse
     {
-        $this->rewardService->store($request->validated());
-        return redirect()->route('rewards.list');
+        return $this->successResponse($this->model->create($request->validated()), Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function show($activity)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        return $this->successResponse($this->model->findOrFail($id)->delete());
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($activity)
+    public function complete(string $id): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request,  $activity)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $this->rewardService->destroy($id);
-        return redirect()->route('rewards.list');
-    }
-
-    public function list()
-    {
-        return view('reward.list', ['data' =>  $this->rewardService->getAllWithIntervals()]);
-    }
-
-    public function completeReward(CompleteRewardRequest $request)
-    {
-
-        $this->rewardService->completeReward($request->all());
-        return redirect()->route('rewards.list');
+        $response = $this->rewardService->completeReward($id);
+        return $this->successResponse($response, Response::HTTP_CREATED);
     }
 }

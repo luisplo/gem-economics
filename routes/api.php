@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\RoleController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IntervalController;
+use App\Http\Controllers\RewardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/intervals', [IntervalController::class, 'index']);
+Route::group(['prefix' => 'activities'], function () {
+    Route::get('/complete/{id}', [ActivityController::class, 'complete']);
+    Route::get('/', [ActivityController::class, 'index']);
+    Route::post('/', [ActivityController::class, 'store']);
+    Route::delete('/{id}', [ActivityController::class, 'destroy']);
 });
-
-Route::resource('roles', RoleController::class);
-
+Route::group(['prefix' => 'rewards'], function () {
+    Route::get('/complete/{id}', [RewardController::class, 'complete']);
+    Route::get('/', [RewardController::class, 'index']);
+    Route::post('/', [RewardController::class, 'store']);
+    Route::delete('/{id}', [RewardController::class, 'destroy']);
+});

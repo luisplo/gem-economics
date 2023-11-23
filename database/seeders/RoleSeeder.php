@@ -20,22 +20,22 @@ class RoleSeeder extends Seeder
         $roles = [
             [
                 'id' => '6e73ac19-9fbb-4c05-a8c3-6bfc5442dde7',
-                'name' => 'Padre',
-                'description' => 'Este rol permite acceso total.',
+                'name' => 'Parent',
+                'description' => 'This role allows total access.',
                 'created_at' => $today,
                 'updated_at' => $today,
             ],
             [
                 'id' => 'c4b23de4-c5e4-443f-a839-e84b44889b17',
-                'name' => 'Tutor',
-                'description' => 'Este rol se limita a dar por terminadas actividades, dar recompensas y penalidades.',
+                'name' => 'Guardian',
+                'description' => 'This role is limited to completing activities, completing rewards and adding penalties.',
                 'created_at' => $today,
                 'updated_at' => $today,
             ],
             [
                 'id' => '93e9cb5b-7615-4e1a-af95-9226714b4ee0',
-                'name' => 'Supervisor',
-                'description' => 'Este rol se limita a visualizar toda la informacion sin modificación alguna.',
+                'name' => 'Auditor',
+                'description' => 'This role is limited to displaying all information without any modification.',
                 'created_at' => $today,
                 'updated_at' => $today,
             ],

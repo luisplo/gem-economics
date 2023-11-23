@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Services\ActivityService;
 use App\Services\RewardService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
-class HomeController extends Controller
+class DashboardController extends Controller
 {
     private $activityService;
     private $rewardService;
@@ -17,11 +17,12 @@ class HomeController extends Controller
         $this->activityService = $activityService;
         $this->rewardService = $rewardService;
     }
-    public function index()
+
+    public function index(): JsonResponse
     {
-        return view('home', [
-            'stats_activities' => $this->activityService->getStats(),
-            'stats_rewards' => $this->rewardService->getStats(),
+        return $this->successResponse([
+            'activities' => $this->activityService->getStats(),
+            'rewards' => $this->rewardService->getStats(),
         ]);
     }
 }

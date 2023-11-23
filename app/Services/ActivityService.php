@@ -3,46 +3,30 @@
 namespace App\Services;
 
 use App\Enum\Interval;
+use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use App\Models\CompleteActivity;
+use App\Models\CompleteReward;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ActivityService
 {
     protected $model;
     protected $completeActivity;
+    protected $completeReward;
 
-    public function __construct(Activity $activity, CompleteActivity $completeActivity)
-    {
+    public function __construct(
+        Activity $activity,
+        CompleteActivity $completeActivity,
+        CompleteReward $completeReward,
+    ) {
         $this->model = $activity;
         $this->completeActivity = $completeActivity;
+        $this->completeReward = $completeReward;
     }
 
-    public function index()
-    {
-        return $this->model->getAllInstance();
-    }
-
-    public function store($request)
-    {
-        return $this->model->storeInstance($request);
-    }
-
-    public function show($id)
-    {
-        return $this->model->getInstance($id);
-    }
-
-    public function update($request, $id)
-    {
-        return $this->model->updateInstance($request, $id);
-    }
-
-    public function destroy($id)
-    {
-        return $this->model->destroyInstance($id);
-    }
-
-    public function getAllWithIntervals()
+    public function getAllWithIntervals(): AnonymousResourceCollection
     {
         $activities = $this->model->getAllWithIntervalsInstance();
 
@@ -64,22 +48,21 @@ class ActivityService
             }
             $activity->update();
         });
-
-        return $activities;
+        return ActivityResource::collection($activities);
     }
 
-    public function completeActivity($request)
+    public function completeActivity(array $request): Model
     {
         return $this->completeActivity->storeInstance($request);
     }
 
-    public function getStats()
+    public function getStats(): array
     {
         return [
-            'values' => $this->completeActivity->where('disabled', false)->sum('value'),
-            'used_values' => $this->completeActivity->where('disabled', true)->sum('value'),
-            'complete_activities' => $this->model->where('disabled', true)->count(),
-            'incomplete_activities' => $this->model->where('disabled', false)->count()
+            'values' => $this->completeActivity->where('value', '>', 0)->sum('value'),
+            'used_values' => $this->completeReward->sum('value'),
+            'complete' => $this->model->where('disabled', true)->count(),
+            'incomplete' => $this->model->where('disabled', false)->count()
         ];
     }
 }

@@ -2,15 +2,13 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 trait JsonResponseTrait
 {
-    public function successResponse($data, $httpCode = null, $message = 'Success operation')
+    public function successResponse($data, $httpCode = null): JsonResponse
     {
-        return response()->json([
-            'message' => $message,
-            'data' => $data
-        ], $httpCode ?? Response::HTTP_OK);
+        return response()->json($data, $httpCode ?? Response::HTTP_OK);
     }
 }

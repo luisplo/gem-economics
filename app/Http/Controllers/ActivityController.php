@@ -4,104 +4,52 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ActivityRequest;
-use App\Http\Requests\CompleteActivityRequest;
-use App\Models\Interval;
+use App\Models\Activity;
+use App\Models\CompleteActivity;
 use App\Services\ActivityService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ActivityController extends Controller
 {
     private $activityService;
+    private $model;
+    private $completeActivityModel;
 
-    public function __construct(ActivityService $activityService)
-    {
+    public function __construct(
+        ActivityService $activityService,
+        Activity $activity,
+        CompleteActivity $completeActivityModel
+    ) {
         $this->activityService = $activityService;
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
+        $this->model = $activity;
+        $this->completeActivityModel = $completeActivityModel;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
+    public function index(): JsonResponse
     {
-        return view('activity.create', ['intervals' => Interval::all()]);
+        return $this->successResponse($this->activityService->getAllWithIntervals());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(ActivityRequest $request)
+    public function store(ActivityRequest $request): JsonResponse
     {
-        $this->activityService->store($request->validated());
-        return redirect()->route('activities.list');
+        return $this->successResponse($this->model->create($request->validated()), Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function show($activity)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        return $this->successResponse($this->model->findOrFail($id)->delete());
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($activity)
+    public function complete(string $id): JsonResponse
     {
-        //
-    }
+        $activity = $this->model->findOrFail($id);
+        $response = $this->completeActivityModel->create([
+            'activity_id' => $activity->id,
+            'value' => $activity->value,
+            'init_value' => $activity->value,
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request,  $activity)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Activity  $activity
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $this->activityService->destroy($id);
-        return redirect()->route('activities.list');
-    }
-
-    public function list()
-    {
-        return view('activity.list', ['data' => $this->activityService->getAllWithIntervals()]);
-    }
-
-    public function completeActivity(CompleteActivityRequest $request)
-    {
-        $this->activityService->completeActivity($request->all());
-        return redirect()->route('activities.list');
+        return $this->successResponse($response, Response::HTTP_CREATED);
     }
 }

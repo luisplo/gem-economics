@@ -6,6 +6,8 @@ use App\Enum\Interval;
 use App\Models\CompleteActivity;
 use App\Models\CompleteReward;
 use App\Models\Reward;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class RewardService
 {
@@ -13,39 +15,17 @@ class RewardService
     protected $completeReward;
     protected $completeActivity;
 
-    public function __construct(Reward $reward, CompleteReward $completeReward, CompleteActivity $completeActivity)
-    {
+    public function __construct(
+        Reward $reward,
+        CompleteReward $completeReward,
+        CompleteActivity $completeActivity
+    ) {
         $this->model = $reward;
         $this->completeReward = $completeReward;
         $this->completeActivity = $completeActivity;
     }
 
-    public function index()
-    {
-        return $this->model->getAllInstance();
-    }
-
-    public function store($request)
-    {
-        return $this->model->storeInstance($request);
-    }
-
-    public function show($id)
-    {
-        return $this->model->getInstance($id);
-    }
-
-    public function update($request, $id)
-    {
-        return $this->model->updateInstance($request, $id);
-    }
-
-    public function destroy($id)
-    {
-        return $this->model->destroyInstance($id);
-    }
-
-    public function getAllWithIntervals()
+    public function getAllWithIntervals(): Collection
     {
         $rewards = $this->model->getAllWithIntervalsInstance();
 
@@ -64,7 +44,7 @@ class RewardService
                 $reward->disabled = true;
                 $reward->update();
             } else {
-                if (self::getRequiredValues() >= $reward->value) {
+                if ($this->completeActivity->where('value', '>', 0)->sum('value') >= $reward->value) {
                     $reward->disabled = false;
                 } else {
                     $reward->disabled = true;
@@ -75,39 +55,38 @@ class RewardService
         return $rewards;
     }
 
-    public function getRequiredValues()
+    public function completeReward(string $id): Model
     {
-        return $this->completeActivity->where('disabled', false)->sum('value');
-    }
+        $reward = $this->model->findOrFail($id);
+        $query = $this->completeActivity->where('value', '>', 0)->latest('value')->get();
 
-    public function completeReward($request)
-    {
-        $query = $this->completeActivity->where('disabled', false)->get();
-        $totalValues = 0;
+        $totalValues =  $reward->value;
+
         foreach ($query as $item) {
-            if ($item->value <= $request['value']) {
-                $totalValues += $item->value;
-                $item->disabled = true;
-                $item->update();
-            } else if ($item->value > $request['value']) {
-                $item->value = $item->value - $request['value'];
-                $item->update();
+            if ($totalValues <= 0) break;
 
-                $totalValues += $request['value'];
+            if ($item->value >= $totalValues) {
+                $item->value -= $totalValues;
+                $totalValues = 0;
+            } else {
+                $totalValues -= $item->value;
+                $item->value = 0;
             }
 
-            if ($totalValues == $request['value']) {
-                $this->completeReward->storeInstance($request);
-                break;
-            }
+            $item->update();
         }
+
+        return $this->completeReward->create([
+            'reward_id' => $reward->id,
+            'value' => $reward->value,
+        ]);
     }
 
-    public function getStats()
+    public function getStats(): array
     {
         return [
-            'complete_rewards' => $this->model->where('disabled', true)->count(),
-            'incomplete_rewards' => $this->model->where('disabled', false)->count()
+            'complete' => $this->model->where('disabled', true)->count(),
+            'incomplete' => $this->model->where('disabled', false)->count()
         ];
     }
 }

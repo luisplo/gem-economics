@@ -17,17 +17,11 @@ class RoleController extends Controller
         $this->roleService = $roleService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): JsonResponse
     {
         return $this->successResponse($this->roleService->index());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): JsonResponse
     {
         return $this->successResponse(
@@ -36,9 +30,6 @@ class RoleController extends Controller
         );
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id): JsonResponse
     {
         return $this->successResponse(
@@ -46,9 +37,6 @@ class RoleController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id): JsonResponse
     {
         return $this->successResponse(
@@ -56,9 +44,6 @@ class RoleController extends Controller
         );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id): JsonResponse
     {
         return $this->successResponse(
