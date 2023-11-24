@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
-const AppName = import.meta.env.VITE_APP_NAME;
 
 export default function Navbar() {
     return (
         <div className="navbar shadow">
             <div className="flex-1">
-                <Link className="text-xl font-bold mx-3 my-auto capitalize" to={'/'}>{AppName}</Link>
+                <Link className="text-xl font-bold mx-3 my-auto capitalize" to={'/'}>Gem economics</Link>
             </div>
             <div className="flex-none">
                 <ul className="menu menu-horizontal px-1">
