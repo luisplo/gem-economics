@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreignUuid('intervals_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('frequency');
             $table->boolean('disabled')->default(false);
+            $table->foreignUuid('user_id')->constrained()->cascadeOnUpdate();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

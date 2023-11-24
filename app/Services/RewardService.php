@@ -8,6 +8,7 @@ use App\Models\CompleteReward;
 use App\Models\Reward;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class RewardService
 {
@@ -60,7 +61,7 @@ class RewardService
         $reward = $this->model->findOrFail($id);
         $query = $this->completeActivity->where('value', '>', 0)->latest('value')->get();
 
-        $totalValues =  $reward->value;
+        $totalValues = $reward->value;
 
         foreach ($query as $item) {
             if ($totalValues <= 0) break;
@@ -79,6 +80,7 @@ class RewardService
         return $this->completeReward->create([
             'reward_id' => $reward->id,
             'value' => $reward->value,
+            'user_id' => Auth::user()->id,
         ]);
     }
 

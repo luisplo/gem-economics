@@ -15,6 +15,7 @@ import ActivityList from './components/ActivityList';
 import { GlobalProvider } from './context/GlobalContext';
 import { ToastContainer } from "react-toastify";
 import RewardsList from './components/RewardsList';
+import Login from './components/Login';
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         element: <Root />,
         errorElement: <ErrorPage />,
         children: [
+            {
+                path: "/login",
+                element: <Login />,
+            },
             {
                 path: "/",
                 element: <Dashboard />,
@@ -42,7 +47,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
     <GlobalProvider>
         <ToastContainer
-            position="top-right"
+            position="bottom-left"
             autoClose={1500}
             hideProgressBar={false}
             newestOnTop={true}

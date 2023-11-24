@@ -4,7 +4,6 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import axios from 'axios';
 import { useGlobalDispatch } from '../../context/GlobalContext';
 import { toast } from "react-toastify";
-const url = import.meta.env.VITE_APP_URL;
 
 export default function LayoutBody({ data, module }) {
 
@@ -13,7 +12,7 @@ export default function LayoutBody({ data, module }) {
     const onDelete = async (item) => {
         let result = confirm(`Do you want to delete: ${item.name}?`)
         if (result) {
-            await axios.delete(`${url}/api/${module}/${item.id}`)
+            await axios.delete(`/api/${module}/${item.id}`)
                 .then(res => {
                     if (res && res.status == 200) {
                         toast.success('Successfully removed')
@@ -30,7 +29,7 @@ export default function LayoutBody({ data, module }) {
     const onComplete = async (item) => {
         let result = confirm(`Do you want to complete: ${item.name}?`)
         if (result) {
-            await axios.get(`${url}/api/${module}/complete/${item.id}`)
+            await axios.get(`/api/${module}/complete/${item.id}`)
                 .then(res => {
                     if (res && res.status == 201) {
                         toast.success('Successfully created')

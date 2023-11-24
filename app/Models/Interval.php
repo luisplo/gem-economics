@@ -11,5 +11,5 @@ class Interval extends Model
     use HasFactory, HasUuids;
 
     protected $keyType = 'string';
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'user_id'];
 }

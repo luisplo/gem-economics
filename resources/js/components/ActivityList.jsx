@@ -4,7 +4,6 @@ import LayoutTable from "../layouts/Table/Table";
 import ModalCreate from "./ModalCreate";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useGlobal, useGlobalDispatch } from "../context/GlobalContext";
-const url = import.meta.env.VITE_APP_URL;
 
 export default function ActivityList() {
     const [data, setData] = useState(null)
@@ -16,7 +15,7 @@ export default function ActivityList() {
             type:'loading',
             loading: true
         })
-        await axios.get(`${url}/api/activities`).then(res => {
+        await axios.get('/api/activities').then(res => {
             setData(res.data)
         }).finally(() => {
             dispatch({
@@ -44,8 +43,8 @@ export default function ActivityList() {
                 data={data}
             />
             <ModalCreate
-                title='Registrar actividad'
-                action='Guardar'
+                title='create activity'
+                action='create'
                 module="activities"
             />
         </div>

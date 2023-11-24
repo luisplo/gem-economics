@@ -13,7 +13,7 @@ class CompleteActivity extends Model
     use HasFactory, HasUuids;
 
     protected $keyType = 'string';
-    protected $fillable = ['activity_id', 'init_value', 'value'];
+    protected $fillable = ['activity_id', 'init_value', 'value', 'user_id'];
 
     public function activity(): HasOne
     {

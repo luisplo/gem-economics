@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
 import { useGlobalDispatch } from "../context/GlobalContext";
-const url = import.meta.env.VITE_APP_URL;
 
 export default function ModalCreate({ title, action, module }) {
     const [intervals, setIntervals] = useState(null)
@@ -10,7 +9,7 @@ export default function ModalCreate({ title, action, module }) {
     const dispatch = useGlobalDispatch()
 
     const fetchData = async () => {
-        let { data } = await axios.get(`${url}/api/intervals`)
+        let { data } = await axios.get(`/api/intervals`)
         setIntervals(data)
     }
 
@@ -32,7 +31,7 @@ export default function ModalCreate({ title, action, module }) {
 
         dispatch({ type: 'refresh', refresh: true })
 
-        await axios.post(`${url}/api/${module}`, formJson).catch(error => {
+        await axios.post(`/api/${module}`, formJson).catch(error => {
             if (error.response.request.status == 422) {
                 setErrors(error.response.data.errors)
             }

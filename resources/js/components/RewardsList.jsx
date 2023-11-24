@@ -4,7 +4,6 @@ import LayoutTable from "../layouts/Table/Table";
 import ModalCreate from "./ModalCreate";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useGlobal, useGlobalDispatch } from "../context/GlobalContext";
-const url = import.meta.env.VITE_APP_URL;
 
 export default function RewardsList() {
     const [data, setData] = useState(null)
@@ -16,7 +15,7 @@ export default function RewardsList() {
             type:'loading',
             loading: true
         })
-        await axios.get(`${url}/api/rewards`).then(res => {
+        await axios.get('/api/rewards').then(res => {
             setData(res.data)
         }).finally(() => {
             dispatch({

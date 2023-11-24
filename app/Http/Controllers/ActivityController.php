@@ -9,6 +9,7 @@ use App\Models\CompleteActivity;
 use App\Services\ActivityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
@@ -33,7 +34,12 @@ class ActivityController extends Controller
 
     public function store(ActivityRequest $request): JsonResponse
     {
-        return $this->successResponse($this->model->create($request->validated()), Response::HTTP_CREATED);
+        return $this->successResponse(
+            $this->model->create(
+                [...$request->validated(), 'user_id' => Auth::user()->id]
+            ),
+            Response::HTTP_CREATED
+        );
     }
 
     public function destroy(string $id): JsonResponse
@@ -48,6 +54,7 @@ class ActivityController extends Controller
             'activity_id' => $activity->id,
             'value' => $activity->value,
             'init_value' => $activity->value,
+            'user_id' =>  Auth::user()->id,
         ]);
 
         return $this->successResponse($response, Response::HTTP_CREATED);

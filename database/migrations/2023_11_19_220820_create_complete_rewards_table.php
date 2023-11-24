@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('reward_id')->constrained()->cascadeOnUpdate()->cascadeOnUpdate();
             $table->integer('value');
-            $table->boolean('disabled')->default(false);
+            $table->foreignUuid('user_id')->constrained()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

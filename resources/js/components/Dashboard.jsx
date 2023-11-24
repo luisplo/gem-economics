@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-const url = import.meta.env.VITE_APP_URL;
 
 export default function Dashboard() {
     const [data, setData] = useState({
@@ -17,7 +16,7 @@ export default function Dashboard() {
     })
 
     const getData = async () => {
-        let { data } = await axios.get(`${url}/api/dashboard`)
+        let { data } = await axios.get('/api/dashboard')
         setData(data);
     }
 

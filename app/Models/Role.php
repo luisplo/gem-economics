@@ -12,7 +12,7 @@ class Role extends Model
     use HasFactory, HasUuids;
 
     protected $keyType = 'string';
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'user_id'];
 
     public function getAllInstance(): Collection
     {

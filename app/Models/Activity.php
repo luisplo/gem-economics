@@ -15,7 +15,7 @@ class Activity extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $keyType = 'string';
-    protected $fillable = ['name', 'description', 'value', 'intervals_id', 'frequency'];
+    protected $fillable = ['name', 'description', 'value', 'intervals_id', 'frequency', 'user_id'];
 
     public function intervals(): BelongsTo
     {

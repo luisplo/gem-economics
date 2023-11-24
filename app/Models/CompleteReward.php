@@ -12,7 +12,7 @@ class CompleteReward extends Model
     use HasFactory, HasUuids;
 
     protected $keyType = 'string';
-    protected $fillable = ['reward_id', 'value'];
+    protected $fillable = ['reward_id', 'value', 'user_id'];
 
     public function storeInstance($request): Model
     {

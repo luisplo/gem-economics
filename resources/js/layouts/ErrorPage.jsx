@@ -7,9 +7,8 @@ export default function ErrorPage() {
     return (
         <div id="error-page" className="flex h-screen">
             <div className="m-auto">
-                <h1 className="text-center text-8xl mb-10 font-bold capitalize">Oops!</h1>
-                <p className="text-center text-xl normal-case">Sorry, an unexpected error occurred</p>
-                <p className="text-center text-sm normal-case">{`${error.error.message} - ${error.status}`}</p>
+                <h1 className="text-center text-8xl mb-10 font-bold capitalize">{error.status}</h1>
+                <p className="text-center text-xl normal-case font-semibold">{error.error.message}</p>
                 <div className="text-center py-6">
                     <Link className="text-xl font-semibold" to={'/'}>
                         Go home
