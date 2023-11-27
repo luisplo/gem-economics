@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Enum\Interval;
+use App\Http\Resources\ActivityResource;
 use App\Models\CompleteActivity;
 use App\Models\CompleteReward;
 use App\Models\Reward;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
 class RewardService
@@ -26,10 +28,46 @@ class RewardService
         $this->completeActivity = $completeActivity;
     }
 
-    public function getAllWithIntervals(): Collection
+    public function completeReward(Collection $reward)
     {
-        $rewards = $this->model->getAllWithIntervalsInstance();
+        $data = $reward->first();
+        $query = $this->completeActivity->where('value', '>', 0)->latest('value')->get();
 
+        $totalValues = $data->value;
+
+        foreach ($query as $item) {
+            if ($totalValues <= 0) break;
+
+            if ($item->value >= $totalValues) {
+                $item->value -= $totalValues;
+                $totalValues = 0;
+            } else {
+                $totalValues -= $item->value;
+                $item->value = 0;
+            }
+
+            $item->update();
+        }
+
+        $this->completeReward->create([
+            'reward_id' => $data->id,
+            'value' => $data->value,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        return $reward;
+    }
+
+    public function getStats(): array
+    {
+        return [
+            'complete' => $this->model->where('disabled', true)->count(),
+            'incomplete' => $this->model->where('disabled', false)->count()
+        ];
+    }
+
+    public function validateActiveReward(Collection $rewards)
+    {
         $rewards->map(function ($reward) {
             if ($reward->intervals->id === Interval::DAY) {
                 $complete = $this->completeReward->getByDay($reward->id, today());
@@ -54,41 +92,5 @@ class RewardService
         });
 
         return $rewards;
-    }
-
-    public function completeReward(string $id): Model
-    {
-        $reward = $this->model->findOrFail($id);
-        $query = $this->completeActivity->where('value', '>', 0)->latest('value')->get();
-
-        $totalValues = $reward->value;
-
-        foreach ($query as $item) {
-            if ($totalValues <= 0) break;
-
-            if ($item->value >= $totalValues) {
-                $item->value -= $totalValues;
-                $totalValues = 0;
-            } else {
-                $totalValues -= $item->value;
-                $item->value = 0;
-            }
-
-            $item->update();
-        }
-
-        return $this->completeReward->create([
-            'reward_id' => $reward->id,
-            'value' => $reward->value,
-            'user_id' => Auth::user()->id,
-        ]);
-    }
-
-    public function getStats(): array
-    {
-        return [
-            'complete' => $this->model->where('disabled', true)->count(),
-            'incomplete' => $this->model->where('disabled', false)->count()
-        ];
     }
 }

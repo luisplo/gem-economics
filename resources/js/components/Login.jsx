@@ -11,7 +11,6 @@ export default function Login() {
     const navigate = useNavigate()
 
     const onSubmit = async () => {
-        // axios.get('/api/sanctum/csrf-cookie')
         await axios.post('/api/login', {
             username,
             password

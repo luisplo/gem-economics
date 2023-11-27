@@ -1,49 +1,61 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify";
-import { useGlobalDispatch } from "../context/GlobalContext";
+import { useGlobal, useGlobalDispatch } from "../context/GlobalContext";
 
 export default function ModalCreate({ title, action, module }) {
-    const [intervals, setIntervals] = useState(null)
     const [errors, setErrors] = useState(null)
     const [loadingSubmit, setLoadingSubmit] = useState(false)
     const dispatch = useGlobalDispatch()
+    const context = useGlobal()
 
-    const fetchData = async () => {
-        let { data } = await axios.get(`/api/intervals`)
-        setIntervals(data)
+    const getData = () => {
+        if (context['initial_intervals']) {
+            axios.get('/api/intervals').then(res => {
+                dispatch({
+                    type: 'intervals',
+                    intervals: res.data
+                })
+            })
+        }
     }
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        getData()
+    }, [context.intervals])
 
     const clearSubmit = () => {
         document.getElementById("create-form").reset();
         setErrors(null)
     }
 
-    const onSubmit = async (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
         setLoadingSubmit(true)
 
-        dispatch({ type: 'refresh', refresh: true })
-
-        await axios.post(`/api/${module}`, formJson).catch(error => {
-            if (error.response.request.status == 422) {
-                setErrors(error.response.data.errors)
-            }
-        }).then(res => {
-            if (res && res.status == 201) {
-                toast.success('Successfully created')
+        axios.post(`/api/${module}`, formJson)
+            .then(res => {
+                if (res && res.status == 201) {
+                    dispatch({
+                        type: 'create-economy',
+                        module,
+                        [module]: res.data
+                    })
+                }
                 clearSubmit()
                 document.getElementById('modal_create_layout').close()
-            }
-        }).finally(() => {
-            setLoadingSubmit(false)
-        })
+                toast.success('Successfully created')
+            })
+            .catch(error => {
+                if (error.response.request.status == 422) {
+                    setErrors(error.response.data.errors)
+                }
+            })
+            .finally(() => {
+                setLoadingSubmit(false)
+            })
     }
 
     return (
@@ -103,8 +115,8 @@ export default function ModalCreate({ title, action, module }) {
                             </label>
                             <select id="intervals_id" name="intervals_id"
                                 className={`select select-bordered ${errors && errors.intervals_id ? 'select-error' : ''}`}>
-                                {intervals && (
-                                    intervals.map((item, index) => {
+                                {context.intervals && (
+                                    context.intervals.map((item, index) => {
                                         return (<option key={index} value={item.id}>{item.name}</option>)
                                     })
                                 )}

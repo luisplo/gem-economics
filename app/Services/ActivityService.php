@@ -7,6 +7,7 @@ use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use App\Models\CompleteActivity;
 use App\Models\CompleteReward;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -26,11 +27,24 @@ class ActivityService
         $this->completeReward = $completeReward;
     }
 
-    public function getAllWithIntervals(): AnonymousResourceCollection
+    public function completeActivity(array $request): Model
     {
-        $activities = $this->model->getAllWithIntervalsInstance();
+        return $this->completeActivity->storeInstance($request);
+    }
 
-        $activities->map(function ($activity) {
+    public function getStats(): array
+    {
+        return [
+            'values' => $this->completeActivity->where('value', '>', 0)->sum('value'),
+            'used_values' => $this->completeReward->sum('value'),
+            'complete' => $this->model->where('disabled', true)->count(),
+            'incomplete' => $this->model->where('disabled', false)->count()
+        ];
+    }
+
+    public function validateActiveActivity(Collection $activities): AnonymousResourceCollection
+    {
+        collect($activities)->map(function ($activity) {
             if ($activity->intervals->id === Interval::DAY) {
                 $complete = $this->completeActivity->getByDay($activity->id, today());
             } else if ($activity->intervals->id === Interval::WEEK) {
@@ -49,20 +63,5 @@ class ActivityService
             $activity->update();
         });
         return ActivityResource::collection($activities);
-    }
-
-    public function completeActivity(array $request): Model
-    {
-        return $this->completeActivity->storeInstance($request);
-    }
-
-    public function getStats(): array
-    {
-        return [
-            'values' => $this->completeActivity->where('value', '>', 0)->sum('value'),
-            'used_values' => $this->completeReward->sum('value'),
-            'complete' => $this->model->where('disabled', true)->count(),
-            'incomplete' => $this->model->where('disabled', false)->count()
-        ];
     }
 }

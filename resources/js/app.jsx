@@ -1,4 +1,3 @@
-
 import './bootstrap';
 import '../css/app.css';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -48,7 +47,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <GlobalProvider>
         <ToastContainer
             position="bottom-left"
-            autoClose={1500}
+            autoClose={5000}
             hideProgressBar={false}
             newestOnTop={true}
             closeOnClick

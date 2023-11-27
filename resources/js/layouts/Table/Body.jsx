@@ -1,51 +1,41 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import axios from 'axios';
 import { useGlobalDispatch } from '../../context/GlobalContext';
-import { toast } from "react-toastify";
 
 export default function LayoutBody({ data, module }) {
-
     const dispatch = useGlobalDispatch()
 
-    const onDelete = async (item) => {
-        let result = confirm(`Do you want to delete: ${item.name}?`)
-        if (result) {
-            await axios.delete(`/api/${module}/${item.id}`)
-                .then(res => {
-                    if (res && res.status == 200) {
-                        toast.success('Successfully removed')
-                        dispatch({ type: 'refresh', refresh: true })
-                    }
-                }).catch(() => {
-                    toast.error('Something has gone wrong')
-                })
-
-        }
-        return result;
+    const onDelete = (item) => {
+        document.getElementById('my_modal').showModal()
+        dispatch({
+            type: 'modal',
+            modal: {
+                url: `/api/${module}/${item.id}`,
+                action: 'delete',
+                title: `Do you want to delete: ${item.name}?`,
+                method: 'delete',
+                module,
+            }
+        })
     }
 
-    const onComplete = async (item) => {
-        let result = confirm(`Do you want to complete: ${item.name}?`)
-        if (result) {
-            await axios.get(`/api/${module}/complete/${item.id}`)
-                .then(res => {
-                    if (res && res.status == 201) {
-                        toast.success('Successfully created')
-                        dispatch({ type: 'refresh', refresh: true })
-                    }
-                }).catch(() => {
-                    toast.error('Something has gone wrong')
-                })
-
-        }
-        return result;
+    const onComplete = (item) => {
+        document.getElementById('my_modal').showModal()
+        dispatch({
+            type: 'modal',
+            modal: {
+                url: `/api/${module}/complete/${item.id}`,
+                action: 'complete',
+                title: `Do you want to complete: ${item.name}?`,
+                method: 'get',
+                module,
+            }
+        })
     }
 
-    return data.map((item, index) => {
+    return data && (data.map((item, index) => {
         return (
-
             <tr className="hover" key={index}>
                 <th>{index + 1}</th>
                 <td>
@@ -76,5 +66,5 @@ export default function LayoutBody({ data, module }) {
                 </td>
             </tr >
         )
-    })
+    }))
 }

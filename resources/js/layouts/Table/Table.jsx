@@ -1,30 +1,49 @@
 import LayoutHeader from "./Header";
-import Loader from "../../components/Loader";
 import LayoutBody from "./Body";
-import { useGlobal } from "../../context/GlobalContext";
-import Modal from "../Modal";
+import { useGlobal, useGlobalDispatch } from "../../context/GlobalContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Loader from "../../components/Loader";
 
-export default function LayoutTable({ data, module }) {
+
+export default function LayoutTable({ module }) {
     const context = useGlobal()
+    const dispatch = useGlobalDispatch()
+    const [loading, setLoading] = useState(false)
+
+    const getData = () => {
+        if (context[`initial_${module}`]) {
+            setLoading(true)
+            axios.get(`/api/${module}`).then(res => {
+                dispatch({
+                    type: module,
+                    [module]: res.data
+                })
+            }).finally(() => {
+                setLoading(false)
+            })
+        }
+    }
+
+    useEffect(() => {
+        getData()
+    }, [context[module]])
+
     return (
         <div>
+
             <table className="table">
                 <thead>
                     <LayoutHeader />
                 </thead>
                 <tbody>
-                    {data && (
-                        <LayoutBody
-                            data={data}
-                            module={module}
-                        />
-                    )}
+                    <LayoutBody
+                        data={context[module]}
+                        module={module}
+                    />
                 </tbody>
             </table>
-            {context.loading && (
-                <Loader />
-            )}
-            <Modal />
+            <Loader loading={loading} />
         </div>
     )
 }

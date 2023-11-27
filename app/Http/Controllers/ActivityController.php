@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ActivityRequest;
+use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use App\Models\CompleteActivity;
 use App\Services\ActivityService;
@@ -29,34 +30,46 @@ class ActivityController extends Controller
 
     public function index(): JsonResponse
     {
-        return $this->successResponse($this->activityService->getAllWithIntervals());
+        $activities = $this->model->getAllWithIntervalsInstance();
+
+        return $this->successResponse(
+            $this->activityService->validateActiveActivity($activities),
+        );
     }
 
     public function store(ActivityRequest $request): JsonResponse
     {
         return $this->successResponse(
-            $this->model->create(
+            ActivityResource::make($this->model->create(
                 [...$request->validated(), 'user_id' => Auth::user()->id]
-            ),
+            )),
             Response::HTTP_CREATED
         );
     }
 
     public function destroy(string $id): JsonResponse
     {
-        return $this->successResponse($this->model->findOrFail($id)->delete());
+        $data = $this->model->findOrFail($id);
+        $data->delete();
+        return $this->successResponse(
+            ActivityResource::make($data)
+        );
     }
 
     public function complete(string $id): JsonResponse
     {
-        $activity = $this->model->findOrFail($id);
-        $response = $this->completeActivityModel->create([
-            'activity_id' => $activity->id,
-            'value' => $activity->value,
-            'init_value' => $activity->value,
+        $activity = $this->model->where('id', $id)->get();
+        $data = $activity->first();
+        $this->completeActivityModel->create([
+            'activity_id' => $data->id,
+            'value' => $data->value,
+            'init_value' => $data->value,
             'user_id' =>  Auth::user()->id,
         ]);
 
-        return $this->successResponse($response, Response::HTTP_CREATED);
+        return $this->successResponse(
+            $this->activityService->validateActiveActivity($activity),
+            Response::HTTP_CREATED
+        );
     }
 }
