@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -22,14 +23,9 @@ class LoginController extends Controller
         }
 
         $user = User::where('username', $request->username)->firstOrFail();
+        $user->token =  $user->createToken('auth_token')->plainTextToken;
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return $this->successResponse([
-            'user_name' => $user->name,
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+        return  $this->successResponse(UserResource::make($user));
     }
 
     public function logout()
