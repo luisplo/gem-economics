@@ -21,7 +21,10 @@ axios.interceptors.response.use(res => {
     return res
 }, (err) => {
     if (err.response.status === 401) {
-        window.location = '/login'
+        localStorage.clear()
+        if (window.location.pathname !== '/login') {
+            window.location = '/login'
+        }
     }
     return Promise.reject(err);
 })

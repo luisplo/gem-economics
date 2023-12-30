@@ -24,10 +24,12 @@ export default function Login() {
             toast.success(`Welcome ${capitalizeFirstLetter(res.data.name)}`)
             success = true
         }).catch(error => {
-            if (error.response && error.response.request.status == 422) {
+            if (error.response && error.response.status == 422) {
                 setErrors(error.response.data.errors)
+            } else if (error.response && error.response.status == 401) {
+                toast.error('User or password incorrect')
             } else {
-                toast.error('Error critical')
+                toast.error('Error unknown')
             }
         }).finally(() => {
             setLoadingSubmit(false)
